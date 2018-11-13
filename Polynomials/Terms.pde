@@ -2,8 +2,8 @@ class Term {
   int coeff;
   int exponent;
   String term;
-  Term(String term
-    ) {
+  
+  Term(String term) {
     this.term = term;
     //As one string
     //check if there is x
