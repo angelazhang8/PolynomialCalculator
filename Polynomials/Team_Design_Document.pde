@@ -19,12 +19,17 @@ void setup() {
   print("polynomial 2: ");
   p2.printPolynomial();
   
-  //Polynomial p3 = p1.getSum(p2);
- 
+  //Polynomial p7 = p1.multiply(p2).collectLikeTerms();
+  Polynomial p8 = p1.multiply(p2);
+  
   Polynomial p4 = p1.getDifference(p2);
 
   print("difference: ");
   p4.printPolynomial();
+  //print("multiply");
+  //p8.printPolynomial();
+  //print("same terms" );
+  //p7.printPolynomial();
   
 
 }
