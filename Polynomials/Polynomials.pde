@@ -47,36 +47,12 @@ class Polynomial {
 
   //======methods
   //adding
-  Polynomial getSum(Polynomial p) {
-
-    ArrayList<Term>tempPolyTerms = p.polyTerms; 
-    ArrayList<Term>sum = new ArrayList <Term>();
-
-    //look at the similar coefficients and add those together
-    for (int i = 0; i < this.polyTerms.size(); i++) {
-      //go through all the terms in the polynomial and see if it matches the exponent and add coeffs
-      boolean summableTermSecondPolynomial = false; //checks to see if the term with the same exponent is in the second polynomial
-
-      for (int j = 0; j < tempPolyTerms.size(); j++) {
-        if (this.polyTerms.get(i).exponent == tempPolyTerms.get(j).exponent) {//if they can be added
-          summableTermSecondPolynomial = true;
-          //add the new term to the sum arraylist
-
-          sum.add( new Term(tempPolyTerms.get(j).coeff + this.polyTerms.get(i).coeff, tempPolyTerms.get(j).exponent)); 
-
-          //take the term away from temp polynomial storage
-          tempPolyTerms.remove(tempPolyTerms.get(j));
-        }
-      } 
-      if (!summableTermSecondPolynomial) {
-        sum.add( new Term(this.polyTerms.get(i).coeff, this.polyTerms.get(i).exponent));
-      }
+  Polynomial getSum(Polynomial other) {
+    ArrayList<Term> minusOther = other.polyTerms;
+    for (Term i : minusOther) {
+      i.coeff *= -1;
     }
-
-    for (int i = 0; i < tempPolyTerms.size(); i++) {
-      sum.add(new Term( tempPolyTerms.get(i).coeff, tempPolyTerms.get(i).exponent ) );
-    }
-    return new Polynomial(sum);
+    return this.getDifference(new Polynomial(minusOther));
   }
 
   Polynomial getDifference(Polynomial other) {
@@ -114,87 +90,75 @@ class Polynomial {
     }
     return new Polynomial(difference);
   }
-    //this 3x^5+2x^3+2x^2     +1
-    //othe 4x^5     +4x^2+3x^1+2
 
-    //subtracting
-    //Polynomial getDifference(Polynomial p) {
-
-    //  ArrayList<Term>tempPolyTerms = p.polyTerms; 
-    //  ArrayList<Term>difference = new ArrayList <Term>();
-    //  //look at the similar coefficients and add those together
-    //  for (int i = 0; i < this.polyTerms.size(); i++) {
-    //    //go through all the terms in the polynomial and see if it matches the exponent and add coeffs
-    //    boolean subtractableTermSecondPolynomial = false; //checks to see if the term with the same exponent is in the second polynomial
-
-    //    for (int j = 0; j < tempPolyTerms.size(); j++) {
-    //      if (this.polyTerms.get(i).exponent == tempPolyTerms.get(j).exponent) {//if they can be added
-    //        //add the new term to the sum arraylist
-    //        subtractableTermSecondPolynomial = true;
-    //        difference.add( new Term(this.polyTerms.get(i).coeff - tempPolyTerms.get(j).coeff, this.polyTerms.get(j).exponent)); 
-    //        println(i, j, subtractableTermSecondPolynomial);
-    //        //take the term away from temp polynomial storage
-    //        tempPolyTerms.remove(tempPolyTerms.get(j));
-    //      } else {
-    //        subtractableTermSecondPolynomial = false;
-    //      }
-    //    } 
-    //    if (!subtractableTermSecondPolynomial) {
-    //      difference.add( new Term(this.polyTerms.get(i).coeff, this.polyTerms.get(i).exponent));
-    //    }
-    //  }
-    //  for (int i = 0; i < tempPolyTerms.size(); i++) {
-    //    difference.add(new Term( tempPolyTerms.get(i).coeff*-1, tempPolyTerms.get(i).exponent ) );
-    //  }
-    //  return new Polynomial(difference);
-    //}
-
-    //multiplying
-    Polynomial multiply(Polynomial p) {
-      ArrayList<Term>product = new ArrayList <Term>();
-      //take the first term and multiply it to the first, second, then add
-
-      for (Term i : polyTerms) {
-        for (Term j : p.polyTerms ) {
-          //multiply
-          product.add(new Term (i.coeff*j.coeff, i.exponent + j.exponent));
+  //multiplying
+  Polynomial multiply(Polynomial other) {
+    ArrayList<Term> product = new ArrayList<Term>();
+    for (Term i : this.polyTerms) {
+      for (Term j : other.polyTerms) {
+        int exponent = i.exponent + j.exponent;
+        int coeff = i.coeff * j.coeff;
+        for (int p=0; p<product.size(); p++) {
+          if (product.get(p).exponent == exponent) {
+            product.get(p).coeff += coeff;
+            break;
+          } else if (product.get(p).exponent < exponent) {
+            product.add(p, new Term(coeff, exponent));
+            break;
+          }
+        }
+        if (product.isEmpty()|| exponent < product.get(product.size()-1).exponent) {
+          product.add(product.size(), new Term(coeff, exponent));
         }
       }
-      return new Polynomial(product );
     }
-
-    //dividing
-    void dividing() {
+    for (int i = 0; i < product.size(); ) {
+      if (product.get(i).coeff == 0) {
+        product.remove(i);
+      } else {
+        i++;
+      }
     }
-
-    //
-    //Polynomial collectLikeTerms() {
-    //  ArrayList<Term>tempPolyTerms = this.polyTerms;
-    //  ArrayList<Term>returnPolynomial = new ArrayList<Term>();
-
-    //  //a for loop to check for the all the terms in sequential order
-    //  for (int i = 0; i < polyTerms.size(); i++) {
-    //    int coeff = tempPolyTerms.get(i).coeff;
-    //    for (int j = tempPolyTerms.size(); j > 0 ; j--) {
-    //      if (tempPolyTerms.get(i).exponent == tempPolyTerms.get(j).exponent) {
-    //        coeff += tempPolyTerms.get(j).coeff;
-    //        tempPolyTerms.remove(tempPolyTerms.get(j));
-    //      }
-    //    }
-    //    returnPolynomial.add(new Term(coeff, tempPolyTerms.get(i).exponent));
-    //    tempPolyTerms.remove(tempPolyTerms.get(i));
-    //  }
-    //  return (new Polynomial (returnPolynomial));
-    //}
-    //graphing
-    void graphPolynomial() {
-    }
-
-    //find roots
-    void findRoots() {
-    }
-
-    //find derivative
-    void findDerivative() {
-    }
+    return new Polynomial(product);
   }
+
+  //dividing
+  ArrayList<Polynomial> divide(Polynomial d) {
+    ArrayList<Term> divisor = d.polyTerms;
+    ArrayList<Term> quotient = new ArrayList<Term>();
+    ArrayList<Term> dividend = this.polyTerms;
+    ArrayList<Term> temp;
+
+    while (true) {
+      int exponDiff = dividend.get(0).exponent - divisor.get(0).exponent;
+      if (exponDiff < 0) break;
+      if (dividend.get(0).coeff%divisor.get(0).coeff != 0) break;
+      int coeffMult = dividend.get(0).coeff%divisor.get(0).coeff;
+      quotient.add(new Term(coeffMult, exponDiff));  
+      temp = divisor;
+      for (Term i : temp) {
+        i.exponent += exponDiff;
+        i.coeff *= coeffMult;
+      }
+      dividend = ((new Polynomial(dividend)).getDifference(new Polynomial(temp))).polyTerms;
+    }
+    ArrayList<Polynomial> result = new ArrayList<Polynomial>();
+    result.add(new Polynomial (quotient));
+    result.add(new Polynomial (dividend));
+
+    return(result);
+  }
+
+
+  //graphing
+  void graphPolynomial() {
+  }
+
+  //find roots
+  void findRoots() {
+  }
+
+  //find derivative
+  void findDerivative() {
+  }
+}
