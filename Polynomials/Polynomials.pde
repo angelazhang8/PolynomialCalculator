@@ -128,12 +128,16 @@ class Polynomial {
     ArrayList<Term> quotient = new ArrayList<Term>();
     ArrayList<Term> dividend = this.polyTerms;
     ArrayList<Term> temp;
-
+    
+    int divisorCoeff = divisor.get(0).coeff;
+    
     while (true) {
       int exponDiff = dividend.get(0).exponent - divisor.get(0).exponent;
       if (exponDiff < 0) break;
-      if (dividend.get(0).coeff%divisor.get(0).coeff != 0) break;
-      int coeffMult = dividend.get(0).coeff%divisor.get(0).coeff;
+
+
+      if (dividend.get(0).coeff % divisorCoeff != 0){ break;} 
+      int coeffMult = dividend.get(0).coeff % divisorCoeff;
       quotient.add(new Term(coeffMult, exponDiff));  
       temp = divisor;
       for (Term i : temp) {
@@ -142,12 +146,13 @@ class Polynomial {
       }
       dividend = ((new Polynomial(dividend)).getDifference(new Polynomial(temp))).polyTerms;
     }
-    ArrayList<Polynomial> result = new ArrayList<Polynomial>();
-    result.add(new Polynomial (quotient));
-    result.add(new Polynomial (dividend));
 
-    return(result);
-  }
+      ArrayList<Polynomial> result = new ArrayList<Polynomial>();
+      result.add(new Polynomial (quotient));
+      result.add(new Polynomial (dividend));
+      return(result);
+    }
+  
 
 
   //graphing

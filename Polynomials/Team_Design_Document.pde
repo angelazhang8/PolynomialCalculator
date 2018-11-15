@@ -9,27 +9,35 @@ void setup() {
   //background(0);
   
   Polynomial p1 = new Polynomial(u1);
-  
   Polynomial p2 = new Polynomial(u2);
-  Polynomial p5 = new Polynomial(u3);
-  Polynomial p6 = new Polynomial(u4);
+  Polynomial p3 = new Polynomial(u3);
+  Polynomial p4 = new Polynomial(u4);
+ 
+  Polynomial sum = p1.getSum(p2);
+  Polynomial difference = p1.getDifference(p2);
+  Polynomial product = p1.multiply(p2);
+  //ArrayList<Polynomial> quotientAndRemainder = p1.divide(p2);
   
-  print("polynomial 1: ");
+  print("first polynomial: ");
   p1.printPolynomial();
-  print("polynomial 2: ");
+  
+  print("second polynomial: ");
   p2.printPolynomial();
   
-  //Polynomial p7 = p1.multiply(p2).collectLikeTerms();
-  Polynomial p8 = p1.multiply(p2);
+  print("sum: ");
+  sum.printPolynomial();
   
-  Polynomial p4 = p1.getDifference(p2);
-
   print("difference: ");
-  p4.printPolynomial();
-  //print("multiply");
-  //p8.printPolynomial();
-  //print("same terms" );
-  //p7.printPolynomial();
+  difference.printPolynomial();
+  
+  print("multiply");
+  product.printPolynomial();
+  
+  //print("quotient");
+  //quotientAndRemainder.get(0).printPolynomial();
+  
+  //print("remainder");
+  //quotientAndRemainder.get(1).printPolynomial();
   
 
 }
