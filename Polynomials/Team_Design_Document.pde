@@ -39,6 +39,25 @@ void setup() {
 
   print("remainder: ");
   quotientAndRemainder.get(1).printPolynomial();
+
+  print("Roots: ");
+  ArrayList<Rational> roots = p1.findRoots();
+  if (roots.size() == 0)
+    print("This polynomial has no roots");
+  else {
+    int i = 0;
+    if (roots.get(i).d == 1)
+      print(roots.get(i).n);
+    else
+      print(roots.get(i).n+"/"+roots.get(i).d);
+    i++;   
+    for (; i <roots.size(); i++) {
+      if (roots.get(i).d == 1)
+        print(", "+roots.get(i).n);
+      else
+        print(", "+roots.get(i).n+"/"+roots.get(i).d);
+    }
+  }
 }
 
 void draw() {

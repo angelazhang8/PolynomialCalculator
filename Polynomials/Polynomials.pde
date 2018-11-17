@@ -156,9 +156,68 @@ class Polynomial {
   void graphPolynomial() {
   }
 
-  //find roots
-  void findRoots() {
+  //based on some sketchy theorem http://mathworld.wolfram.com/PolynomialRoots.html
+  //example 1: x^3 - x - 6 //dn=1 d0=-6
+  //example 2: x^3 + x //dn=1 d0=0
+  //x(x^2-1)
+  // if r is root of x^2-1, then r is root of e.g.2
+  ArrayList<Rational> findRoots() {
+    ArrayList<Term> p = this.polyTerms;
+    
+    ArrayList<Rational>result = new ArrayList<Rational>();
+
+    int minExp = p.get(p.size()-1).exponent;
+
+    if (minExp != 0) { //if d0 = 0
+      result.add(new Rational(0, 1));
+    }
+
+    ArrayList<Integer> numerators, denominators;
+    if (p.get(0).coeff < 0) {
+      numerators = findFactors( -1*p.get(0).coeff);
+    } else {
+      numerators = findFactors( p.get(0).coeff);
+    }
+    if (p.get(0).coeff < 0) {
+      denominators = findFactors( p.get(p.size()-1).coeff);
+    } else {
+      denominators = findFactors( p.get(p.size()-1).coeff);
+    }
+
+    for (int n : numerators) {
+      for (int d : denominators) {
+        Rational possibleRoot = new Rational(n, d);
+        if (isRoot(possibleRoot, minExp))
+          result.add(possibleRoot);
+      }
+    }
+    return result;
   }
+
+  boolean isRoot (Rational r, int minusExp) {
+    Rational result = new Rational (0, 1);
+    for (Term i : this.polyTerms) {
+
+      Rational t = new Rational (r.n, r.d);
+      for (int j = 0; j < i.exponent - minusExp; j++) {
+        t.multiply(r);
+      }
+      t.multiply(new Rational(i.coeff, 1));
+      result.add(t);
+    }
+    return result.n == 0;
+  }
+
+  //find factors of non-negative integer argument
+  public ArrayList<Integer>findFactors(int num) {
+    ArrayList<Integer>result = new ArrayList<Integer>(); 
+    for (int i = 1; i <= num; i++) {
+      if (num%i == 0)
+        result.add(i);
+    }
+    return (result);
+  }
+
 
   //find derivative
   void findDerivative() {
