@@ -9,18 +9,31 @@
 //    term = this.polyTerm.get(i);
 //    for (int j = 0; j < tempPolyTerms.size(); j++) {
 //      if (this.polyTerms.get(i).exponent == tempPolyTerms.get(j).exponent) {//if they can be added
-
-//        term.coff -= tempPolyTerms.get(j).coeff;
+//        term.coeff -= tempPolyTerms.get(j).coeff;
 //        println(i, j, subtractableTermSecondPolynomial);
 //      } else {
 //      }
 //    } 
-//    if (term.coffe != 0) {
-//      diff.add(term);
+//    if (term.coeff != 0) {
+//      difference.add(term);
 //    }
 //  }
 //  for (int i = 0; i < tempPolyTerms.size(); i++) {
 //    difference.add(new Term( tempPolyTerms.get(i).coeff*-1, tempPolyTerms.get(i).exponent ) );
 //  }
 //  return new Polynomial(difference);
+//}
+
+//if (x<10) {
+//  print("round ", x, ": ");
+//  for (Term i : dividend) {
+//    print(i.coeff, "x^", i.exponent, " + ");
+//  }
+//  print(" temp: ");
+//  for (Term i : temp) {
+//    print( i.coeff, "x^", i.exponent, " + ");
+//  }
+//  println("");
+//} else {
+//  break;
 //}

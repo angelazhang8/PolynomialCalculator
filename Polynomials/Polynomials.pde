@@ -55,9 +55,9 @@ class Polynomial {
     return this.getDifference(new Polynomial(minusOther));
   }
 
-  Polynomial getDifference(Polynomial other) {
+  Polynomial getDifference(final Polynomial other) {
 
-    ArrayList<Term> otherTerms = other.polyTerms; 
+    final ArrayList<Term> otherTerms = other.polyTerms; 
     ArrayList<Term> difference = new ArrayList <Term>(); 
 
     for (int i=0, j=0;; ) {
@@ -123,37 +123,34 @@ class Polynomial {
   }
 
   //dividing
-  ArrayList<Polynomial> divide(Polynomial d) {
-    ArrayList<Term> divisor = d.polyTerms;
+
+  ArrayList<Polynomial> divide(final Polynomial d) {
+    final ArrayList<Term> divisor = d.polyTerms;
     ArrayList<Term> quotient = new ArrayList<Term>();
-    ArrayList<Term> dividend = this.polyTerms;
-    ArrayList<Term> temp;
-    
-    int divisorCoeff = divisor.get(0).coeff;
-    
+    ArrayList<Term> dividend = new ArrayList<Term>();
+    for (Term i : this.polyTerms) {
+      dividend.add(new Term(i.coeff, i. exponent));
+    }
     while (true) {
       int exponDiff = dividend.get(0).exponent - divisor.get(0).exponent;
       if (exponDiff < 0) break;
-
-
-      if (dividend.get(0).coeff % divisorCoeff != 0){ break;} 
-      int coeffMult = dividend.get(0).coeff % divisorCoeff;
+      if (dividend.get(0).coeff % divisor.get(0).coeff != 0) { 
+        break;
+      } //can't divide the coeffs
+      int coeffMult = dividend.get(0).coeff / divisor.get(0).coeff;
       quotient.add(new Term(coeffMult, exponDiff));  
-      temp = divisor;
-      for (Term i : temp) {
-        i.exponent += exponDiff;
-        i.coeff *= coeffMult;
+      ArrayList<Term> temp = new ArrayList<Term>();
+      for (Term i : divisor) {
+        temp.add(new Term(i.coeff*coeffMult, i.exponent+exponDiff));
       }
       dividend = ((new Polynomial(dividend)).getDifference(new Polynomial(temp))).polyTerms;
     }
 
-      ArrayList<Polynomial> result = new ArrayList<Polynomial>();
-      result.add(new Polynomial (quotient));
-      result.add(new Polynomial (dividend));
-      return(result);
-    }
-  
-
+    ArrayList<Polynomial> result = new ArrayList<Polynomial>();
+    result.add(new Polynomial (quotient));
+    result.add(new Polynomial (dividend));
+    return(result);
+  }
 
   //graphing
   void graphPolynomial() {

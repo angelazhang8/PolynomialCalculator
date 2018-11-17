@@ -7,39 +7,38 @@ String u4 = "7x^2+5x+-4";
 void setup() {
   //size(600, 600);
   //background(0);
-  
+
   Polynomial p1 = new Polynomial(u1);
   Polynomial p2 = new Polynomial(u2);
   Polynomial p3 = new Polynomial(u3);
   Polynomial p4 = new Polynomial(u4);
- 
+
   Polynomial sum = p1.getSum(p2);
   Polynomial difference = p1.getDifference(p2);
   Polynomial product = p1.multiply(p2);
-  //ArrayList<Polynomial> quotientAndRemainder = p1.divide(p2);
-  
+
+
   print("first polynomial: ");
   p1.printPolynomial();
-  
+
   print("second polynomial: ");
   p2.printPolynomial();
-  
+
   print("sum: ");
   sum.printPolynomial();
-  
+
   print("difference: ");
   difference.printPolynomial();
-  
-  print("multiply");
-  product.printPolynomial();
-  
-  //print("quotient");
-  //quotientAndRemainder.get(0).printPolynomial();
-  
-  //print("remainder");
-  //quotientAndRemainder.get(1).printPolynomial();
-  
 
+  print("multiply: ");
+  product.printPolynomial();
+  ArrayList<Polynomial> quotientAndRemainder = p1.divide(p2);
+
+  print("quotient: ");
+  quotientAndRemainder.get(0).printPolynomial();
+
+  print("remainder: ");
+  quotientAndRemainder.get(1).printPolynomial();
 }
 
 void draw() {
