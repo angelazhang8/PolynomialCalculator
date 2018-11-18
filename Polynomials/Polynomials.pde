@@ -3,29 +3,105 @@ class Polynomial {
   //add positive in front of negatives for string
   ArrayList<Term>polyTerms = new ArrayList <Term>();
 
+  //Polynomial (String p) {
+  //  //create an array of terms from string after splitting
+  //  String [] terms = split(p, "+");
+
+  //  for (int i = 0; i < terms.length; i++) {//make the arraylist of terms
+  //    //if we take the terms from the string we split
+  //    this.polyTerms.add(new Term(terms[i]));
+
+  //    //or if we take the coefficients directly from the GUI
+  //    //polyTerms[i] = new Term(something, something);
+  //  }
+  //}
+
+  //String u1 = "7x^3+-x";
+  //String u2 = "x^3+5x^2+-x";
+  //String u3 = "-4x^7+3x^2+-x+1";
+  //String u4 = "x^3-3x^2+2x";
   Polynomial (String p) {
-    //create an array of terms from string after splitting
-    String [] terms = split(p, "+");
+    this.polyTerms = new ArrayList<Term>();
+    int sign = 1;
+    int coeff = 0;
+    int exponent = 0;
+    int curI = 0;
+    int xI = 0;
+    int endI = 0;
+    if (p.charAt(0) == '-') {
+      sign = -1;
+      curI += 1;
+    }
+    while (curI != p.length()) {
+      xI = p.indexOf("x", curI);
+      if (xI == -1) {
+        // no 'x', this is the last term and the constant term
+        coeff = sign * int(p.substring(curI, p.length()));
+        this.polyTerms.add(new Term(coeff, 0));
+        return;
+      } 
+      coeff = sign * int(p.substring(curI, xI));
 
-    for (int i = 0; i < terms.length; i++) {//make the arraylist of terms
-      //if we take the terms from the string we split
-      this.polyTerms.add(new Term(terms[i]));
+      // find end index of this term
+      int plusIndex = p.indexOf("+", xI);
+      int minusIndex = p.indexOf("-", xI);
+      if (plusIndex == -1 && minusIndex == -1) {
+        // no '+' or '-' after 'x', this is the last term
+        if (xI + 1 != p.length() && p.charAt(xI + 1) == '^')
+          exponent = int(p.substring(xI + 2, p.length()));
+        else
+          exponent = 1;
+        this.polyTerms.add(new Term(coeff, exponent));
+        return;
+      }
 
-      //or if we take the coefficients directly from the GUI
-      //polyTerms[i] = new Term(something, something);
+      if (plusIndex == -1 || (minusIndex != -1 && plusIndex > minusIndex)) {
+        // first seen '-', next term's sign is -
+        sign = -1;
+        endI = minusIndex;
+      } else {
+        // first seen '+', next term's sign is +
+        sign = 1;
+        endI = plusIndex;
+      }
+      if (xI + 1 != p.length() && p.charAt(xI + 1) == '^')
+        exponent = int(p.substring(xI + 2, p.length()));
+      else
+        exponent = 1;
+      this.polyTerms.add(new Term(coeff, exponent));
+      curI = endI + 1;
     }
   }
+
   Polynomial (ArrayList<Term> a) {
     this.polyTerms = a;
   }
 
   void printPolynomial () {
-    for (int i = 0; i < this.polyTerms.size(); i++) {
-      this.polyTerms.get(i).printTerm();
+    int i = 0;
+    if (this.polyTerms.get(i).exponent == 1) {
+      print(this.polyTerms.get(i).coeff + "x");
+    } else {
+      print(this.polyTerms.get(i).coeff + "x^" + this.polyTerms.get(i).exponent);
     }
-
-    println();
+    for (i = 1; i < this.polyTerms.size(); i++) {
+      if (this.polyTerms.get(i).coeff > 0)
+        print("+");
+      if (this.polyTerms.get(i).exponent == 0)  
+        print(this.polyTerms.get(i).coeff);
+      else if (this.polyTerms.get(i).exponent == 1)  
+        print(this.polyTerms.get(i).coeff + "x");
+      else 
+      print(this.polyTerms.get(i).coeff + "x^" + this.polyTerms.get(i).exponent);
+    }
   }
+  //void printPolynomial () {
+  //  for (int i = 0; i < this.polyTerms.size(); i++) {
+  //    this.polyTerms.get(i).printTerm();
+  //  }
+
+  //  println();
+  //}
 
   void simplify() {
     //if coefficient is +-1, then just omit it
@@ -163,15 +239,12 @@ class Polynomial {
   // if r is root of x^2-1, then r is root of e.g.2
   ArrayList<Rational> findRoots() {
     ArrayList<Term> p = this.polyTerms;
-    
     ArrayList<Rational>result = new ArrayList<Rational>();
-
     int minExp = p.get(p.size()-1).exponent;
 
     if (minExp != 0) { //if d0 = 0
       result.add(new Rational(0, 1));
     }
-
     ArrayList<Integer> numerators, denominators;
     if (p.get(0).coeff < 0) {
       numerators = findFactors( -1*p.get(0).coeff);
@@ -189,7 +262,55 @@ class Polynomial {
         Rational possibleRoot = new Rational(n, d);
         if (isRoot(possibleRoot, minExp))
           result.add(possibleRoot);
+        possibleRoot = new Rational(-n, d);
+        if (isRoot(possibleRoot, minExp))
+          result.add(possibleRoot);
       }
+    }
+    return result;
+  }
+
+  float getYforX(float x) {
+    float result = 0;
+    for (Term i : this.polyTerms) {
+      result +=pow(x, i.exponent)*i.coeff;
+    }
+    return result;
+  }
+
+  float findOneRoot(float xBegin, float xEnd) {
+    final float ACCURACY = 0.01;
+    float n = 10;
+    float increment = (xEnd-xBegin)/n;
+    float yValue = getYforX(xBegin);
+
+    if (abs(yValue) < ACCURACY)    
+      return xBegin;
+    for (int i = 1; i < n; n++) {
+      float xI = xBegin + i*increment;
+      float yI = getYforX(xI);
+      if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
+        return findOneRoot(xI-increment, xI);
+      }
+    }
+    return xBegin - 1; //won't come here anyways
+  }
+
+  //root approximater
+  ArrayList<Float> findApproxRoots(float xBegin, float xEnd, int steps) {
+    ArrayList<Float> result = new ArrayList<Float>();
+
+    float increment = (xEnd - xBegin)/steps;
+    float yValue = getYforX(xBegin);
+
+    for (int i = 1; i < steps; i++) {
+      float xI = xBegin + i*increment;
+      float yI = getYforX(xI);
+      if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
+        float root = findOneRoot(xI-increment, xI);
+        result.add(new Float(root));
+      }
+      yValue = yI;
     }
     return result;
   }

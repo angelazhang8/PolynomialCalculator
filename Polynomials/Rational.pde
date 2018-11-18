@@ -3,6 +3,8 @@ class Rational {
   Rational(int n, int d) {
     this.n = n;
     this.d = d;
+    if (this.n == 0)
+      this.d = 1;
   }
   void add(Rational other) {
     int tempD = this.d * other.d;
@@ -10,6 +12,8 @@ class Rational {
     int g = gcd(tempD, tempN);
     this.n = tempN/g;
     this.d = tempD/g;
+    if (this.n == 0)
+      this.d = 1;
   }
 
   void multiply(Rational other) {
@@ -18,6 +22,8 @@ class Rational {
     int g = gcd(tempD, tempN);
     this.n = tempN/g;
     this.d = tempD/g;
+    if (this.n == 0)
+      this.d = 1;
   }
 
   int gcd(int a, int b) {

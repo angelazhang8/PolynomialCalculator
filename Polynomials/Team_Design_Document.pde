@@ -2,7 +2,7 @@ import java.util.Arrays;
 String u1 = "7x^3+-x";
 String u2 = "x^3+5x^2+-x";
 String u3 = "4x^7+3x^2+-x+1";
-String u4 = "7x^2+5x+-4";
+String u4 = "x^3+-3x^2+2x";
 
 void setup() {
   //size(600, 600);
@@ -12,7 +12,7 @@ void setup() {
   Polynomial p2 = new Polynomial(u2);
   Polynomial p3 = new Polynomial(u3);
   Polynomial p4 = new Polynomial(u4);
-
+p4.printPolynomial();
   Polynomial sum = p1.getSum(p2);
   Polynomial difference = p1.getDifference(p2);
   Polynomial product = p1.multiply(p2);
@@ -39,9 +39,11 @@ void setup() {
 
   print("remainder: ");
   quotientAndRemainder.get(1).printPolynomial();
-
-  print("Roots: ");
-  ArrayList<Rational> roots = p1.findRoots();
+  
+  p4.printPolynomial();
+  
+  print("Rational roots: ");
+  ArrayList<Rational> roots = p4.findRoots();
   if (roots.size() == 0)
     print("This polynomial has no roots");
   else {
@@ -58,6 +60,14 @@ void setup() {
         print(", "+roots.get(i).n+"/"+roots.get(i).d);
     }
   }
+
+  println("");
+  print("Approx. Roots: ");
+  ArrayList<Float> approxRoots = p4.findApproxRoots(-10, 10, 20);
+  for (Float i : approxRoots) {
+    print(i + " ");
+  }
+  println("");
 }
 
 void draw() {
