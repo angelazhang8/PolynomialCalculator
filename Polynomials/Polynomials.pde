@@ -5,19 +5,6 @@ class Polynomial {
   // accuracy when finding approx. roots
   final float ACCURACY = 0.00000000001;
 
-  //Polynomial (String p) {
-  //  //create an array of terms from string after splitting
-  //  String [] terms = split(p, "+");
-
-  //  for (int i = 0; i < terms.length; i++) {//make the arraylist of terms
-  //    //if we take the terms from the string we split
-  //    this.polyTerms.add(new Term(terms[i]));
-
-  //    //or if we take the coefficients directly from the GUI
-  //    //polyTerms[i] = new Term(something, something);
-  //  }
-  //}
-
   Polynomial (String p) {
     this.polyTerms = new ArrayList<Term>();
     int sign = 1;
