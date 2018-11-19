@@ -2,6 +2,8 @@ class Polynomial {
   String p;
   //add positive in front of negatives for string
   ArrayList<Term>polyTerms = new ArrayList <Term>();
+  // accuracy when finding approx. roots
+  final float ACCURACY = 0.00000000001;
 
   //Polynomial (String p) {
   //  //create an array of terms from string after splitting
@@ -16,10 +18,6 @@ class Polynomial {
   //  }
   //}
 
-  //String u1 = "7x^3+-x";
-  //String u2 = "x^3+5x^2+-x";
-  //String u3 = "-4x^7+3x^2+-x+1";
-  //String u4 = "x^3-3x^2+2x";
   Polynomial (String p) {
     this.polyTerms = new ArrayList<Term>();
     int sign = 1;
@@ -31,7 +29,7 @@ class Polynomial {
     if (p.charAt(0) == '-') {
       sign = -1;
       curI += 1;
-    }
+    }//"-2x^3-2x^2+2x+4"
     while (curI != p.length()) {
       xI = p.indexOf("x", curI);
       if (xI == -1) {
@@ -39,8 +37,12 @@ class Polynomial {
         coeff = sign * int(p.substring(curI, p.length()));
         this.polyTerms.add(new Term(coeff, 0));
         return;
-      } 
-      coeff = sign * int(p.substring(curI, xI));
+      }
+      if (curI == xI) {
+        coeff = sign * 1;
+      } else {
+        coeff = sign * int(p.substring(curI, xI));
+      }
 
       // find end index of this term
       int plusIndex = p.indexOf("+", xI);
@@ -65,7 +67,7 @@ class Polynomial {
         endI = plusIndex;
       }
       if (xI + 1 != p.length() && p.charAt(xI + 1) == '^')
-        exponent = int(p.substring(xI + 2, p.length()));
+        exponent = int(p.substring(xI + 2, endI));
       else
         exponent = 1;
       this.polyTerms.add(new Term(coeff, exponent));
@@ -79,30 +81,45 @@ class Polynomial {
 
   void printPolynomial () {
     int i = 0;
-    if (this.polyTerms.get(i).exponent == 1) {
-      print(this.polyTerms.get(i).coeff + "x");
-    } else {
-      print(this.polyTerms.get(i).coeff + "x^" + this.polyTerms.get(i).exponent);
-    }
-    for (i = 1; i < this.polyTerms.size(); i++) {
-      if (this.polyTerms.get(i).coeff > 0)
-        print("+");
-      if (this.polyTerms.get(i).exponent == 0)  
-        print(this.polyTerms.get(i).coeff);
-      else if (this.polyTerms.get(i).exponent == 1)  
-        print(this.polyTerms.get(i).coeff + "x");
+    if (this.polyTerms.get(i).coeff == 1) {
+      if (this.polyTerms.get(i).exponent == 0)
+        print("1");
       else 
-      print(this.polyTerms.get(i).coeff + "x^" + this.polyTerms.get(i).exponent);
+      print("");
+    } else if (this.polyTerms.get(i).coeff == -1)
+      print("-");
+    else 
+    print(this.polyTerms.get(i).coeff);
+
+    if (this.polyTerms.get(i).exponent == 0)  
+      print("");
+    else if (this.polyTerms.get(i).exponent == 1)  
+      print("x");
+    else 
+    print("x^" + this.polyTerms.get(i).exponent);
+
+    for (i = 1; i < this.polyTerms.size(); i++) {    
+      if (this.polyTerms.get(i).coeff == 1) {
+        if (this.polyTerms.get(i).exponent == 0)
+          print("+1");
+        else 
+        print("+");
+      } else if (this.polyTerms.get(i).coeff == -1)
+        print("-");
+      else if (this.polyTerms.get(i).coeff > 0)
+        print("+" + this.polyTerms.get(i).coeff);
+      else 
+      print(this.polyTerms.get(i).coeff);
+
+      if (this.polyTerms.get(i).exponent == 0)  
+        print("");
+      else if (this.polyTerms.get(i).exponent == 1)  
+        print("x");
+      else 
+      print("x^" + this.polyTerms.get(i).exponent);
     }
   }
-  //void printPolynomial () {
-  //  for (int i = 0; i < this.polyTerms.size(); i++) {
-  //    this.polyTerms.get(i).printTerm();
-  //  }
-
-  //  println();
-  //}
-
+  
   void simplify() {
     //if coefficient is +-1, then just omit it
 
@@ -124,9 +141,9 @@ class Polynomial {
   //======methods
   //adding
   Polynomial getSum(Polynomial other) {
-    ArrayList<Term> minusOther = other.polyTerms;
-    for (Term i : minusOther) {
-      i.coeff *= -1;
+    ArrayList<Term> minusOther = new ArrayList<Term>();
+    for (Term i : other.polyTerms) {
+      minusOther.add(new Term(-1*i.coeff, i.exponent));
     }
     return this.getDifference(new Polynomial(minusOther));
   }
@@ -232,29 +249,105 @@ class Polynomial {
   void graphPolynomial() {
   }
 
+
+
+  float getYforX(float x) {
+    float result = 0;
+    for (Term i : this.polyTerms) {
+      result +=pow(x, i.exponent)*i.coeff;
+    }
+    return result;
+  }
+
+  float findOneApproxRoot(float xBegin, float xEnd) {
+    float n = 8;
+    float increment = (xEnd - xBegin) / n;
+    if (xBegin == xBegin + increment) {
+       println("x range: " + xBegin + " to " + xEnd + " is too small, increment=" + increment + ", return xBegin as approx. root");
+      return xBegin;
+    }
+    float yValue = getYforX(xBegin);
+     println("x range: " + xBegin + " to " + xEnd + ", y is " + yValue + " to " + getYforX(xEnd));
+    if (abs(yValue) < this.ACCURACY) {
+       println("find root=" + xBegin + " y=" + yValue);
+      return xBegin;
+    }
+    for (int i = 1; i <= n; i++) {
+      float xI = xBegin + i * increment;
+      float yI = getYforX(xI);
+      if (abs(yI) < this.ACCURACY) {
+         println("find root=" + xI + " y=" + yI);
+        return xI;
+      }
+      if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
+        return findOneApproxRoot(xI - increment, xI);
+      }
+    }
+    println("ACCURARY is too small. No root between " + xBegin + " " + xEnd);
+    return xBegin;
+  }
+
+  //root approximater
+  ArrayList<Float> findApproxRoots(float xBegin, float xEnd, int steps) {
+    ArrayList<Float> result = new ArrayList<Float>();
+    float increment = (xEnd - xBegin) / steps;
+    while (true) {
+      float yValue = getYforX(xBegin);
+      // find first non-root
+      while (true) {
+        if (xBegin > xEnd) 
+          return result;
+        if (abs(yValue) < this.ACCURACY) {
+          result.add(new Float(xBegin));
+          xBegin += increment;
+          yValue = getYforX(xBegin);
+        } else {
+          break;
+        }
+      }
+
+      float xI = xBegin + increment;  
+      while (true) {
+        if (xI > xEnd)
+          return result;
+        float yI = getYforX(xI);
+        if (abs(yI) < this.ACCURACY) {
+          xBegin = xI;
+          break;
+        }
+        if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
+           println("yI sign changed between " + (xI - increment) + " and " + xI + ", y is " + getYforX(xI - increment) + " and " + yI);
+          float root = findOneApproxRoot(xI - increment, xI);
+          result.add(new Float(root));
+          xBegin = xI;
+          break;
+        }
+        xI += increment;
+      }
+    }
+  }
+
   //based on some sketchy theorem http://mathworld.wolfram.com/PolynomialRoots.html
   //example 1: x^3 - x - 6 //dn=1 d0=-6
-  //example 2: x^3 + x //dn=1 d0=0
-  //x(x^2-1)
-  // if r is root of x^2-1, then r is root of e.g.2
-  ArrayList<Rational> findRoots() {
+  //example 2: x^3 + x     //dn=1 d0=0
+  ArrayList<Rational> findRationalRoots() {
     ArrayList<Term> p = this.polyTerms;
     ArrayList<Rational>result = new ArrayList<Rational>();
     int minExp = p.get(p.size()-1).exponent;
-
-    if (minExp != 0) { //if d0 = 0
+    if (minExp != 0) { //if d0 == 0
       result.add(new Rational(0, 1));
     }
+
     ArrayList<Integer> numerators, denominators;
     if (p.get(0).coeff < 0) {
-      numerators = findFactors( -1*p.get(0).coeff);
+      denominators = findFactors(-1*p.get(0).coeff);
     } else {
-      numerators = findFactors( p.get(0).coeff);
+      denominators = findFactors(p.get(0).coeff);
     }
-    if (p.get(0).coeff < 0) {
-      denominators = findFactors( p.get(p.size()-1).coeff);
+    if (p.get(p.size()-1).coeff < 0) {
+      numerators = findFactors(-1 * p.get(p.size()-1).coeff);
     } else {
-      denominators = findFactors( p.get(p.size()-1).coeff);
+      numerators = findFactors(p.get(p.size()-1).coeff);
     }
 
     for (int n : numerators) {
@@ -270,61 +363,19 @@ class Polynomial {
     return result;
   }
 
-  float getYforX(float x) {
-    float result = 0;
-    for (Term i : this.polyTerms) {
-      result +=pow(x, i.exponent)*i.coeff;
-    }
-    return result;
-  }
-
-  float findOneRoot(float xBegin, float xEnd) {
-    final float ACCURACY = 0.01;
-    float n = 10;
-    float increment = (xEnd-xBegin)/n;
-    float yValue = getYforX(xBegin);
-
-    if (abs(yValue) < ACCURACY)    
-      return xBegin;
-    for (int i = 1; i < n; n++) {
-      float xI = xBegin + i*increment;
-      float yI = getYforX(xI);
-      if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
-        return findOneRoot(xI-increment, xI);
-      }
-    }
-    return xBegin - 1; //won't come here anyways
-  }
-
-  //root approximater
-  ArrayList<Float> findApproxRoots(float xBegin, float xEnd, int steps) {
-    ArrayList<Float> result = new ArrayList<Float>();
-
-    float increment = (xEnd - xBegin)/steps;
-    float yValue = getYforX(xBegin);
-
-    for (int i = 1; i < steps; i++) {
-      float xI = xBegin + i*increment;
-      float yI = getYforX(xI);
-      if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
-        float root = findOneRoot(xI-increment, xI);
-        result.add(new Float(root));
-      }
-      yValue = yI;
-    }
-    return result;
-  }
-
-  boolean isRoot (Rational r, int minusExp) {
+  boolean isRoot(Rational r, int minusExp) {
     Rational result = new Rational (0, 1);
     for (Term i : this.polyTerms) {
-
-      Rational t = new Rational (r.n, r.d);
-      for (int j = 0; j < i.exponent - minusExp; j++) {
-        t.multiply(r);
+      if (i.exponent - minusExp > 0) {
+        Rational t = new Rational (r.n, r.d);
+        for (int j = 0; j < i.exponent - minusExp - 1; j++) {
+          t.multiply(r);
+        }
+        t.multiply(new Rational(i.coeff, 1));
+        result.add(t);
+      } else {
+        result.add(new Rational(i.coeff, 1));
       }
-      t.multiply(new Rational(i.coeff, 1));
-      result.add(t);
     }
     return result.n == 0;
   }
@@ -338,7 +389,6 @@ class Polynomial {
     }
     return (result);
   }
-
 
   //find derivative
   void findDerivative() {
