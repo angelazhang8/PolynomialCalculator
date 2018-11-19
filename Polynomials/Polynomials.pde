@@ -106,7 +106,7 @@ class Polynomial {
       print("x^" + this.polyTerms.get(i).exponent);
     }
   }
-  
+
   void simplify() {
     //if coefficient is +-1, then just omit it
 
@@ -250,20 +250,20 @@ class Polynomial {
     float n = 8;
     float increment = (xEnd - xBegin) / n;
     if (xBegin == xBegin + increment) {
-       println("x range: " + xBegin + " to " + xEnd + " is too small, increment=" + increment + ", return xBegin as approx. root");
+      println("x range: " + xBegin + " to " + xEnd + " is too small, increment=" + increment + ", return xBegin as approx. root");
       return xBegin;
     }
     float yValue = getYforX(xBegin);
-     println("x range: " + xBegin + " to " + xEnd + ", y is " + yValue + " to " + getYforX(xEnd));
+    println("x range: " + xBegin + " to " + xEnd + ", y is " + yValue + " to " + getYforX(xEnd));
     if (abs(yValue) < this.ACCURACY) {
-       println("find root=" + xBegin + " y=" + yValue);
+      println("find root=" + xBegin + " y=" + yValue);
       return xBegin;
     }
     for (int i = 1; i <= n; i++) {
       float xI = xBegin + i * increment;
       float yI = getYforX(xI);
       if (abs(yI) < this.ACCURACY) {
-         println("find root=" + xI + " y=" + yI);
+        println("find root=" + xI + " y=" + yI);
         return xI;
       }
       if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
@@ -303,7 +303,7 @@ class Polynomial {
           break;
         }
         if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
-           println("yI sign changed between " + (xI - increment) + " and " + xI + ", y is " + getYforX(xI - increment) + " and " + yI);
+          println("yI sign changed between " + (xI - increment) + " and " + xI + ", y is " + getYforX(xI - increment) + " and " + yI);
           float root = findOneApproxRoot(xI - increment, xI);
           result.add(new Float(root));
           xBegin = xI;
