@@ -49,11 +49,11 @@ println(derivativeSlider.getValueF());
 
 public void computeButtonClicked(GButton source, GEvent event) { //_CODE_:computeButton:411332:
   if (opt == 0)
-    p6.getSum(p7).printPolynomial();
+    p6.getSum(p7).printPolynomialtoGUIScreen();
   else if (opt == 1)
-    p6.getDifference(p7).printPolynomial();
+    p6.getDifference(p7).printPolynomialtoGUIScreen();
   else if (opt == 2){
-    p6.multiply(p7).printPolynomial();
+    p6.multiply(p7).printPolynomialtoGUIScreen();
   }
   else{
  
