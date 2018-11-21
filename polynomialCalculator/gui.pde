@@ -32,7 +32,8 @@ public void graphPolynomialButtonChange(GButton source, GEvent event) { //_CODE_
   ellipse(width/2, height/2, 100,100);
   p6 = new Polynomial(polynomial1.getText());
   //window2.draw();
-  p6.graphPolynomial();
+  polynomialToBeDrawn = p6;
+  redraw();
 } //_CODE_:graphPolynomialButton:432256:
 
 public void findRootsButtonClicked(GButton source, GEvent event) { //_CODE_:findRootsButton:463413:

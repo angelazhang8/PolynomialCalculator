@@ -307,17 +307,17 @@ class Polynomial {
     float [] ScreenY = new float [numpoints];
 
     for (int n=0; n<numpoints; n++) {
-      ScreenX[n] = 500+(xValues[n]*xFactor);
-      ScreenY[n] = 500-(yValues[n]*yFactor);
+      ScreenX[n] = 300+(xValues[n]*xFactor);
+      ScreenY[n] = 300-(yValues[n]*yFactor);
     }
 
     for (int i=1; i<numpoints; i++) {
       line(ScreenX[i], ScreenY[i], ScreenX[i-1], ScreenY[i-1]);
       fill(0);
     }
-    line(500, 0, 500, 1000);
+    line(300, 0, 300, 600);
     fill(0);
-    line(0, 500, 1000, 500); 
+    line(0, 300, 600, 300); 
     fill(0);
   }
 

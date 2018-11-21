@@ -14,6 +14,8 @@ String yourAnswer;
 
 Polynomial p6, p7, p8;
 
+Polynomial polynomialToBeDrawn = new Polynomial(u1);
+
 void testingStuff() { 
   Polynomial p1 = new Polynomial(u1);
   Polynomial p2 = new Polynomial(u2);
@@ -22,6 +24,7 @@ void testingStuff() {
   Polynomial p5 = new Polynomial(u5);
   Polynomial p8 = new Polynomial (u6);
   Polynomial p9 = new Polynomial (u7);
+  
 
   Polynomial sum = p1.getSum(p2);
   Polynomial difference = p1.getDifference(p2);
@@ -162,5 +165,6 @@ float roundAny(float x, int d) {  //suppose x = 6.86927 and d = 2
 void draw() {
   //testingStuff();
   background(0,255,0);
+  polynomialToBeDrawn.graphPolynomial();
 
 }
