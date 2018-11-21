@@ -109,11 +109,11 @@ class Polynomial {
     }
   }
 
-  void printPolynomialtoGUIScreen () {
-    yourAnswer = "";
+  String printPolynomialtoGUIScreen () {
+    String yourAnswer = "";
     int i = 0;
     if (this.polyTerms.size() == 0)
-      return;
+      return "";
     if (this.polyTerms.get(i).coeff == 1) {
       if (this.polyTerms.get(i).exponent == 0)
         yourAnswer+=("1");
@@ -151,6 +151,7 @@ class Polynomial {
       else 
       yourAnswer+=("x^" + this.polyTerms.get(i).exponent);
     }
+    return yourAnswer;
   }
 
   //======methods
@@ -167,7 +168,19 @@ class Polynomial {
 
     final ArrayList<Term> otherTerms = other.polyTerms; 
     ArrayList<Term> difference = new ArrayList <Term>(); 
-
+    if (otherTerms.size() == 0) {
+      for (Term i : this.polyTerms) {
+        difference.add(new Term(i.coeff, i.exponent));
+      }
+      return new Polynomial(difference);
+    }
+    if (this.polyTerms.size() == 0) {
+      // negate other and return
+      for (Term i : otherTerms) {
+        difference.add(new Term(-1*i.coeff, i.exponent));
+      }
+      return new Polynomial(difference);
+    }
     for (int i=0, j=0;; ) {
       if (this.polyTerms.get(i).exponent == other.polyTerms.get(j).exponent ) {
         int coeff = this.polyTerms.get(i).coeff - other.polyTerms.get(j).coeff;
@@ -239,6 +252,13 @@ class Polynomial {
     for (Term i : this.polyTerms) {
       dividend.add(new Term(i.coeff, i. exponent));
     }
+    if (this.polyTerms.size() == 0) {
+      ArrayList<Polynomial> result = new ArrayList<Polynomial>();
+      result.add(new Polynomial (quotient));
+      result.add(new Polynomial (dividend));
+      return(result);
+    }
+
     while (true) {
       int exponDiff = dividend.get(0).exponent - divisor.get(0).exponent;
       if (exponDiff < 0) break;
@@ -264,6 +284,8 @@ class Polynomial {
   Polynomial findDerivative() {
     ArrayList<Term>derivativeTerms= new ArrayList<Term>(); 
     for (Term i : this.polyTerms) {
+      if (i.exponent == 0)
+        continue;
       int newCoeff = (i.coeff*i.exponent);
       int newExp = i.exponent-1;
       derivativeTerms.add(new Term(newCoeff, newExp));
@@ -368,7 +390,7 @@ class Polynomial {
         if (xBegin > xEnd) 
           return result;
         if (abs(yValue) < this.ACCURACY) {
-          result.add(new Float(xBegin));
+          result.add(roundAny(new Float(xBegin), 3));
           xBegin += increment;
           yValue = getYforX(xBegin);
         } else {
@@ -388,7 +410,7 @@ class Polynomial {
         if ((yI < 0 && yValue > 0) || (yI > 0 && yValue < 0)) {
           println("yI sign changed between " + (xI - increment) + " and " + xI + ", y is " + getYforX(xI - increment) + " and " + yI);
           float root = findOneApproxRoot(xI - increment, xI);
-          result.add(new Float(root));
+          result.add(roundAny(new Float(root), 3));
           xBegin = xI;
           break;
         }

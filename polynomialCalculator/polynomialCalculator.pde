@@ -10,7 +10,6 @@ String u6 = "6";
 String u7 = "2";
 
 int opt;
-String yourAnswer;
 
 Polynomial p6, p7, p8;
 
@@ -24,7 +23,7 @@ void testingStuff() {
   Polynomial p5 = new Polynomial(u5);
   Polynomial p8 = new Polynomial (u6);
   Polynomial p9 = new Polynomial (u7);
-  
+
 
   Polynomial sum = p1.getSum(p2);
   Polynomial difference = p1.getDifference(p2);
@@ -85,6 +84,36 @@ void testingStuff() {
     println("\n");
   }
 }
+
+String printRootsToScreen (){
+  String stringToBePrinted = "";
+    stringToBePrinted+=("\nRational roots: ");
+    ArrayList<Rational> roots = p8.findRationalRoots();
+    if (roots.size() == 0)
+      stringToBePrinted+=("This polynomial has no rational roots");
+    else {
+      int i = 0;
+      if (roots.get(i).d == 1)
+        stringToBePrinted+=(roots.get(i).n);
+      else
+        stringToBePrinted+=(roots.get(i).n+"/"+roots.get(i).d);
+      i++;   
+      for (; i <roots.size(); i++) {
+        if (roots.get(i).d == 1)
+          stringToBePrinted+=(", "+roots.get(i).n);
+        else
+          stringToBePrinted+=(", "+roots.get(i).n+"/"+roots.get(i).d);
+      }
+    }
+    stringToBePrinted+=("\nApprox. Roots: ");
+    ArrayList<Float> approxRoots = p8.findApproxRoots(-3, 3, 100);
+    for (Float i : approxRoots) {
+      stringToBePrinted+=(i + " ");
+    }
+    stringToBePrinted+=("\n");
+    return stringToBePrinted;
+  }
+
 
 void setup() {
   size(600, 600);
@@ -164,7 +193,6 @@ float roundAny(float x, int d) {  //suppose x = 6.86927 and d = 2
 
 void draw() {
   //testingStuff();
-  background(0,255,0);
+  background(0, 255, 0);
   polynomialToBeDrawn.graphPolynomial();
-
 }
