@@ -261,7 +261,7 @@ class Polynomial {
     result.add(new Polynomial (dividend));
     return(result);
   }
-  ArrayList<Term> findDerivative() {
+  Polynomial findDerivative() {
     ArrayList<Term>derivativeTerms= new ArrayList<Term>(); 
     for (Term i : this.polyTerms) {
       int newCoeff = (i.coeff*i.exponent);
@@ -269,7 +269,7 @@ class Polynomial {
       derivativeTerms.add(new Term(newCoeff, newExp));
     }
 
-    return (derivativeTerms);
+    return (new Polynomial(derivativeTerms));
   }
 
 

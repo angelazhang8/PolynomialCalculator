@@ -12,7 +12,7 @@ String u7 = "2";
 int opt;
 String yourAnswer;
 
-Polynomial p6, p7;
+Polynomial p6, p7, p8;
 
 void testingStuff() { 
   Polynomial p1 = new Polynomial(u1);
@@ -84,10 +84,11 @@ void testingStuff() {
 }
 
 void setup() {
-  size(600, 600, JAVA2D);
+  size(600, 600);
 
   background(255);
   createGUI();
+  noLoop();
 
   //customGUI();
 }
@@ -160,5 +161,6 @@ float roundAny(float x, int d) {  //suppose x = 6.86927 and d = 2
 
 void draw() {
   //testingStuff();
+  background(0,255,0);
 
 }

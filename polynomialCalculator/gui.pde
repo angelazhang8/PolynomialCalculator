@@ -15,7 +15,7 @@
  */
 
 synchronized public void win_draw4(PApplet appc, GWinData data) { //_CODE_:window1:484111:
-  appc.background(230);
+  appc.background(255);
 } //_CODE_:window1:484111:
 
 public void polynomial1Change(GTextField source, GEvent event) { //_CODE_:polynomial1:269090:
@@ -28,13 +28,14 @@ public void polynomial2Change(GTextField source, GEvent event) { //_CODE_:polyno
 
 public void graphPolynomialButtonChange(GButton source, GEvent event) { //_CODE_:graphPolynomialButton:432256:
   println("got here");
+  fill(255,0,0);
+  ellipse(width/2, height/2, 100,100);
   p6 = new Polynomial(polynomial1.getText());
   //window2.draw();
-
+  p6.graphPolynomial();
 } //_CODE_:graphPolynomialButton:432256:
 
 public void findRootsButtonClicked(GButton source, GEvent event) { //_CODE_:findRootsButton:463413:
- 
 } //_CODE_:findRootsButton:463413:
 
 public void operationChange(GDropList source, GEvent event) { //_CODE_:operation:261089:
@@ -43,7 +44,14 @@ public void operationChange(GDropList source, GEvent event) { //_CODE_:operation
 
 public void derivativeSliderChange(GSlider source, GEvent event) { //_CODE_:derivativeSlider:346920:
   int numDerivative = int(p6.polyTerms.get(0).exponent * derivativeSlider.getValueF());
-println(derivativeSlider.getValueF());
+  ArrayList<Term> derivativeTerms = new ArrayList<Term>();
+  for (Term i : p8.polyTerms) {
+    derivativeTerms.add(new Term(i.coeff, i. exponent));
+  }
+  Polynomial derivative = new Polynomial(derivativeTerms);
+  for (int i = 0; i < numDerivative; i++) {
+    derivative = derivative.findDerivative();
+  }
 
 } //_CODE_:derivativeSlider:346920:
 
@@ -52,11 +60,10 @@ public void computeButtonClicked(GButton source, GEvent event) { //_CODE_:comput
     p6.getSum(p7).printPolynomialtoGUIScreen();
   else if (opt == 1)
     p6.getDifference(p7).printPolynomialtoGUIScreen();
-  else if (opt == 2){
+  else if (opt == 2) {
     p6.multiply(p7).printPolynomialtoGUIScreen();
-  }
-  else{
- 
+  } else {
+
     p6.printPolynomial();
     p7.printPolynomial();
     ArrayList<Polynomial> quotientAndRemainder = p6.divide(p7);
@@ -68,10 +75,17 @@ public void computeButtonClicked(GButton source, GEvent event) { //_CODE_:comput
     (quotientAndRemainder.get(1)).printPolynomialtoGUIScreen();
     tempString += "remainder: " + yourAnswer;
     yourAnswer = tempString;
-    
   }
   polynomialDisplay.setText(yourAnswer);
 } //_CODE_:computeButton:411332:
+
+public void polynomial3Change(GTextField source, GEvent event) { //_CODE_:polynomial3:487841:
+  println("polynomial3 - GTextField >> GEvent." + event + " @ " + millis());
+} //_CODE_:polynomial3:487841:
+
+public void imgButton1_click1(GImageButton source, GEvent event) { //_CODE_:imgButton1:901869:
+  println("imgButton1 - GImageButton >> GEvent." + event + " @ " + millis());
+} //_CODE_:imgButton1:901869:
 
 
 
@@ -82,48 +96,58 @@ public void createGUI(){
   G4P.setGlobalColorScheme(GCScheme.BLUE_SCHEME);
   G4P.setCursor(ARROW);
   surface.setTitle("Sketch Window");
-  window1 = GWindow.getWindow(this, "testing", 0, 0, 600, 400, JAVA2D);
+  window1 = GWindow.getWindow(this, "testing", 0, 0, 1200, 400, JAVA2D);
   window1.noLoop();
   window1.addDrawHandler(this, "win_draw4");
-  polynomial1 = new GTextField(window1, 28, 114, 160, 30, G4P.SCROLLBARS_NONE);
+  polynomial1 = new GTextField(window1, 28, 114, 101, 30, G4P.SCROLLBARS_NONE);
+  polynomial1.setText("5x");
   polynomial1.setOpaque(true);
   polynomial1.addEventHandler(this, "polynomial1Change");
-  polynomial2 = new GTextField(window1, 375, 117, 160, 30, G4P.SCROLLBARS_NONE);
+  polynomial2 = new GTextField(window1, 269, 117, 160, 30, G4P.SCROLLBARS_NONE);
   polynomial2.setOpaque(true);
   polynomial2.addEventHandler(this, "polynomial2Change");
-  graphPolynomialButton = new GButton(window1, 372, 227, 94, 41);
+  graphPolynomialButton = new GButton(window1, 417, 256, 94, 41);
   graphPolynomialButton.setText("Graph polynomial");
   graphPolynomialButton.addEventHandler(this, "graphPolynomialButtonChange");
-  findRootsButton = new GButton(window1, 100, 235, 80, 30);
+  findRootsButton = new GButton(window1, 426, 316, 80, 30);
   findRootsButton.setText("FInd roots");
   findRootsButton.addEventHandler(this, "findRootsButtonClicked");
-  operation = new GDropList(window1, 234, 120, 90, 100, 4);
+  operation = new GDropList(window1, 156, 123, 90, 100, 4);
   operation.setItems(loadStrings("list_261089"), 0);
   operation.addEventHandler(this, "operationChange");
-  polynomialDisplay = new GLabel(window1, 226, 219, 118, 67);
+  polynomialDisplay = new GLabel(window1, 466, 100, 118, 67);
   polynomialDisplay.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   polynomialDisplay.setText("Your answer");
   polynomialDisplay.setOpaque(false);
-  derivativeSlider = new GSlider(window1, 262, 318, 131, 40, 10.0);
+  derivativeSlider = new GSlider(window1, 242, 318, 131, 40, 10.0);
   derivativeSlider.setLimits(0.0, 0.0, 1.0);
   derivativeSlider.setNumberFormat(G4P.DECIMAL, 2);
   derivativeSlider.setOpaque(false);
   derivativeSlider.addEventHandler(this, "derivativeSliderChange");
-  label2 = new GLabel(window1, 125, 313, 124, 53);
+  label2 = new GLabel(window1, 244, 260, 124, 53);
   label2.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   label2.setText("Find derivative");
   label2.setOpaque(false);
-  polynomial1Label = new GLabel(window1, 52, 43, 115, 35);
+  polynomial1Label = new GLabel(window1, 22, 58, 115, 35);
   polynomial1Label.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   polynomial1Label.setText("Enter your first polynomial");
   polynomial1Label.setOpaque(false);
-  polynomial2Label = new GLabel(window1, 383, 44, 141, 39);
+  polynomial2Label = new GLabel(window1, 278, 65, 141, 39);
   polynomial2Label.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
   polynomial2Label.setText("Enter your second polynomial");
   polynomial2Label.setOpaque(false);
-  computeButton = new GButton(window1, 230, 79, 80, 30);
+  computeButton = new GButton(window1, 156, 79, 80, 30);
   computeButton.setText("Compute");
   computeButton.addEventHandler(this, "computeButtonClicked");
+  polynomial3 = new GTextField(window1, 42, 314, 160, 30, G4P.SCROLLBARS_NONE);
+  polynomial3.setOpaque(true);
+  polynomial3.addEventHandler(this, "polynomial3Change");
+  label1 = new GLabel(window1, 41, 194, 168, 104);
+  label1.setTextAlign(GAlign.CENTER, GAlign.MIDDLE);
+  label1.setText("Enter a polynomial here to find the derivative/graph/find roots of");
+  label1.setOpaque(false);
+  imgButton1 = new GImageButton(window1, 440, 19, 253, 60, new String[] { "funcWiz.jpg", "funcWiz.jpg", "funcWiz.jpg" } );
+  imgButton1.addEventHandler(this, "imgButton1_click1");
   window1.loop();
 }
 
@@ -141,3 +165,6 @@ GLabel label2;
 GLabel polynomial1Label; 
 GLabel polynomial2Label; 
 GButton computeButton; 
+GTextField polynomial3; 
+GLabel label1; 
+GImageButton imgButton1; 
