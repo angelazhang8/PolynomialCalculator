@@ -68,6 +68,8 @@ class Polynomial {
 
   void printPolynomial () {
     int i = 0;
+    if (this.polyTerms.size() == 0)
+      return;
     if (this.polyTerms.get(i).coeff == 1) {
       if (this.polyTerms.get(i).exponent == 0)
         print("1");
@@ -107,22 +109,48 @@ class Polynomial {
     }
   }
 
-  void simplify() {
-    //if coefficient is +-1, then just omit it
+  void printPolynomialtoGUIScreen () {
+    yourAnswer = "";
+    int i = 0;
+    if (this.polyTerms.size() == 0)
+      return;
+    if (this.polyTerms.get(i).coeff == 1) {
+      if (this.polyTerms.get(i).exponent == 0)
+        yourAnswer+=("1");
+      else 
+      yourAnswer+=("");
+    } else if (this.polyTerms.get(i).coeff == -1)
+      yourAnswer+=("-");
+    else 
+    yourAnswer+=(this.polyTerms.get(i).coeff);
 
-    //if the first term's sign is a +, then remove
+    if (this.polyTerms.get(i).exponent == 0)  
+      yourAnswer+=("");
+    else if (this.polyTerms.get(i).exponent == 1)  
+      yourAnswer+=("x");
+    else 
+    yourAnswer+=("x^" + this.polyTerms.get(i).exponent);
 
-    //if the power for x is 0, then just omit it and leave a constant
+    for (i = 1; i < this.polyTerms.size(); i++) {    
+      if (this.polyTerms.get(i).coeff == 1) {
+        if (this.polyTerms.get(i).exponent == 0)
+          yourAnswer+=("+1");
+        else 
+        yourAnswer+=("+");
+      } else if (this.polyTerms.get(i).coeff == -1)
+        yourAnswer+=("-");
+      else if (this.polyTerms.get(i).coeff > 0)
+        yourAnswer+=("+" + this.polyTerms.get(i).coeff);
+      else 
+      yourAnswer+=(this.polyTerms.get(i).coeff);
 
-    //if coefficient is 0, omit term
-    for (Term i : this.polyTerms) {
-      if (i.coeff == 0)
-        polyTerms.remove(i);
+      if (this.polyTerms.get(i).exponent == 0)  
+        yourAnswer+=("");
+      else if (this.polyTerms.get(i).exponent == 1)  
+        yourAnswer+=("x");
+      else 
+      yourAnswer+=("x^" + this.polyTerms.get(i).exponent);
     }
-  }
-
-  void displayPolynomial() {
-    //get rid of - signs in front of terms, unless it's the first one, and just do subtraction
   }
 
   //======methods
@@ -224,6 +252,8 @@ class Polynomial {
         temp.add(new Term(i.coeff*coeffMult, i.exponent+exponDiff));
       }
       dividend = ((new Polynomial(dividend)).getDifference(new Polynomial(temp))).polyTerms;
+      if (dividend.size() == 0)
+        break;
     }
 
     ArrayList<Polynomial> result = new ArrayList<Polynomial>();
@@ -231,12 +261,65 @@ class Polynomial {
     result.add(new Polynomial (dividend));
     return(result);
   }
+  ArrayList<Term> findDerivative() {
+    ArrayList<Term>derivativeTerms= new ArrayList<Term>(); 
+    for (Term i : this.polyTerms) {
+      int newCoeff = (i.coeff*i.exponent);
+      int newExp = i.exponent-1;
+      derivativeTerms.add(new Term(newCoeff, newExp));
+    }
 
-  //graphing
-  void graphPolynomial() {
+    return (derivativeTerms);
   }
 
 
+  //graphing
+  void graphPolynomial() {
+    int xMin = -20;  //declare minimum and maximum x values and find xIncrement from GUI
+    int xMax = 20;
+    float xIncrement = 0.1;
+
+    int numpoints = int((xMax-xMin)/xIncrement)+ 1;   // calculate number of points
+
+    float [] xValues = new float [numpoints]; 
+    float [] yValues = new float [numpoints]; 
+
+    for ( int i=0; i<numpoints; i++) {  // calulate x and y Values and put them into arrays
+      float x = roundAny((xMin+(xIncrement*i)), 2); 
+
+      float newYVal = 0;
+      for (int j = 0; j < this.polyTerms.size(); j++) {
+        float TermValue = this.polyTerms.get(j).coeff*pow(x, this.polyTerms.get(j).exponent); 
+        newYVal += TermValue;
+      }
+      yValues[i] = newYVal;
+      xValues[i] = x;
+      //print(xValues[i]);
+      //print("\t");
+      //print(yValues[i]);
+      //println("");
+    }
+    // transform points from actual value to screen coordinates
+    float xFactor = 20;
+    float yFactor = 20;
+
+    float [] ScreenX = new float [numpoints];
+    float [] ScreenY = new float [numpoints];
+
+    for (int n=0; n<numpoints; n++) {
+      ScreenX[n] = 500+(xValues[n]*xFactor);
+      ScreenY[n] = 500-(yValues[n]*yFactor);
+    }
+
+    for (int i=1; i<numpoints; i++) {
+      line(ScreenX[i], ScreenY[i], ScreenX[i-1], ScreenY[i-1]);
+      fill(0);
+    }
+    line(500, 0, 500, 1000);
+    fill(0);
+    line(0, 500, 1000, 500); 
+    fill(0);
+  }
 
   float getYforX(float x) {
     float result = 0;
@@ -250,13 +333,13 @@ class Polynomial {
     float n = 8;
     float increment = (xEnd - xBegin) / n;
     if (xBegin == xBegin + increment) {
-      println("x range: " + xBegin + " to " + xEnd + " is too small, increment=" + increment + ", return xBegin as approx. root");
+      //println("x range: " + xBegin + " to " + xEnd + " is too small, increment=" + increment + ", return xBegin as approx. root");
       return xBegin;
     }
     float yValue = getYforX(xBegin);
-    println("x range: " + xBegin + " to " + xEnd + ", y is " + yValue + " to " + getYforX(xEnd));
+    //println("x range: " + xBegin + " to " + xEnd + ", y is " + yValue + " to " + getYforX(xEnd));
     if (abs(yValue) < this.ACCURACY) {
-      println("find root=" + xBegin + " y=" + yValue);
+      //println("find root=" + xBegin + " y=" + yValue);
       return xBegin;
     }
     for (int i = 1; i <= n; i++) {
@@ -270,7 +353,7 @@ class Polynomial {
         return findOneApproxRoot(xI - increment, xI);
       }
     }
-    println("ACCURARY is too small. No root between " + xBegin + " " + xEnd);
+    //println("ACCURARY is too small. No root between " + xBegin + " " + xEnd);
     return xBegin;
   }
 
@@ -375,9 +458,5 @@ class Polynomial {
         result.add(i);
     }
     return (result);
-  }
-
-  //find derivative
-  void findDerivative() {
   }
 }
