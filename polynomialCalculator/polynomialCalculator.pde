@@ -10,6 +10,7 @@ String u6 = "6";
 String u7 = "2";
 
 int opt;
+float derivativeSliderNumber;
 
 Polynomial p6, p7, p8;
 
