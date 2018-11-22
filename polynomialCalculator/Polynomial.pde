@@ -296,6 +296,7 @@ class Polynomial {
 
 
   //graphing
+  //graphing
   void graphPolynomial() {
     int xMin = -20;  //declare minimum and maximum x values and find xIncrement from GUI
     int xMax = 20;
@@ -316,32 +317,40 @@ class Polynomial {
       }
       yValues[i] = newYVal;
       xValues[i] = x;
-      //print(xValues[i]);
-      //print("\t");
-      //print(yValues[i]);
-      //println("");
+
     }
     // transform points from actual value to screen coordinates
-    float xFactor = 20;
-    float yFactor = 20;
-
+    int Factor = abs(xMax); 
+    
     float [] ScreenX = new float [numpoints];
     float [] ScreenY = new float [numpoints];
 
-    for (int n=0; n<numpoints; n++) {
-      ScreenX[n] = 300+(xValues[n]*xFactor);
-      ScreenY[n] = 300-(yValues[n]*yFactor);
+    for (int i=0; i<numpoints; i++) {
+      ScreenX[i] = (width/2)+(xValues[i]*Factor);
+      ScreenY[i] = (width/2)-(yValues[i]*Factor);
     }
 
     for (int i=1; i<numpoints; i++) {
       line(ScreenX[i], ScreenY[i], ScreenX[i-1], ScreenY[i-1]);
       fill(0);
     }
-    line(300, 0, 300, 600);
+    line((width/2), 0, (width/2), width);
     fill(0);
-    line(0, 300, 600, 300); 
+    line(0, (width/2), width, (width/2)); 
     fill(0);
+    
+    for(int i= xMin; i<(xMax-xMin)+1; i++){
+      int x = (width/2)+(i*Factor);
+      line(x,((width/2)-5),x,((width/2)+10));
+      text(i, x, ((width/2)+20)); 
+      textAlign(CENTER); 
+      line(((width/2)-5),x,((width/2)+5),x);
+      text(-i, ((width/2)+20),x); 
+      textAlign(CENTER); 
+      fill(0);
+    }
   }
+    
 
   float getYforX(float x) {
     float result = 0;
