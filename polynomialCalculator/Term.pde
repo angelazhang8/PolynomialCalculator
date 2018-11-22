@@ -27,9 +27,7 @@ class Term {
     }
   }
 
-
-  Term(int coeff, int exponent) {
-    //just as coefficients
+  Term(int coeff, int exponent) { 
     this.coeff = coeff;
     this.exponent = exponent;
   }

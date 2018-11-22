@@ -1,4 +1,8 @@
-class Rational {
+//used in finding the rational roots
+//essentially, you're just trying to return a fraction
+//pretty standard stuff
+
+class Rational { 
   int n, d;
   Rational(int n, int d) {
     this.n = n;
