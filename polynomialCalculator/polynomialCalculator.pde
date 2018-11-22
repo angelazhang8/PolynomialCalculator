@@ -1,7 +1,8 @@
-import java.util.Arrays; 
+import java.util.Arrays;  
 import g4p_controls.*;
 
-String u1 = "7x^3+x";
+//test cases
+String u1 = "0";
 String u2 = "x^3+5x^2+x";
 String u3 = "9x^2+9x+2";
 String u4 = "x^3-3x^2+2x";
@@ -9,27 +10,25 @@ String u5 = "-x^3-2x^2+2x+4";
 String u6 = "6";
 String u7 = "2";
 
-int opt;
-float derivativeSliderNumber;
+int opt; //operation for the slider (add/subtract/multiply/divide)
 
-Polynomial p6, p7, p8;
+Polynomial p6, p7, p8; //polynomial strings from the text fields in the GUI's
 
-Polynomial polynomialToBeDrawn = new Polynomial(u1);
+Polynomial polynomialToBeDrawn = new Polynomial(u1); //set the polynomial to be graphed and assign to this variable
 
 void testingStuff() { 
-  Polynomial p1 = new Polynomial(u1);
+  Polynomial p1 = new Polynomial(u1); //creating the polynomials from the strings
   Polynomial p2 = new Polynomial(u2);
   Polynomial p3 = new Polynomial(u3);
   Polynomial p4 = new Polynomial(u4);
   Polynomial p5 = new Polynomial(u5);
-  Polynomial p8 = new Polynomial (u6);
-  Polynomial p9 = new Polynomial (u7);
 
-
+  //calling the methods for the polynomial class
   Polynomial sum = p1.getSum(p2);
   Polynomial difference = p1.getDifference(p2);
   Polynomial product = p1.multiply(p2);
   p1.graphPolynomial();
+  
   ArrayList<Polynomial> quotientAndRemainder = p1.divide(p2);
   print("first polynomial: ");
   p1.printPolynomial();
@@ -51,7 +50,8 @@ void testingStuff() {
   print(", remainder: ");
   quotientAndRemainder.get(1).printPolynomial();
   println("\n");
-
+  
+  //printing the results from the operations
   ArrayList<Polynomial> polynomials = new ArrayList<Polynomial>();
   polynomials.add(p3);
   polynomials.add(p4);
@@ -194,6 +194,6 @@ float roundAny(float x, int d) {  //suppose x = 6.86927 and d = 2
 
 void draw() {
   //testingStuff();
-  background(0, 255, 0);
+  background(255);
   polynomialToBeDrawn.graphPolynomial();
 }
